@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8" />
+        <title>Avito Live Messages</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            body {
+                font-family: system-ui, Arial;
+                max-width: 720px;
+                margin: 24px auto;
+            }
+            .msg {
+                padding: 10px 12px;
+                margin: 6px 0;
+                border-radius: 10px;
+            }
+            .contact {
+                background: #f6ffed;
+            }
+            .me {
+                background: #e6f7ff;
+                text-align: right;
+            }
+            .ts {
+                opacity: 0.6;
+                font-size: 12px;
+                margin-left: 8px;
+            }
+            button {
+                padding: 8px 12px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Avito Listener — demo</h1>
+        <p>Сообщения ниже появляются в реальном времени.</p>
+        <p><button id="test">Отправить тестовое событие</button></p>
+        <div id="feed"></div>
+
+        <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+        <script>
+            const socket = io(location.origin, { transports: ['websocket'] })
+            const feed = document.getElementById('feed')
+
+            socket.on('message:new', (msg) => {
+                const div = document.createElement('div')
+                div.className = `msg ${msg.author}`
+                div.textContent = msg.text
+                const t = document.createElement('span')
+                t.className = 'ts'
+                t.textContent = ' • ' + new Date(msg.ts).toLocaleTimeString()
+                div.appendChild(t)
+                feed.appendChild(div)
+                window.scrollTo(0, document.body.scrollHeight)
+            })
+        </script>
+    </body>
+</html>
